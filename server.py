@@ -25,7 +25,7 @@ class ClientThread(threading.Thread):
                 break;
         
         self.socket.close()
-        print "Client " + self.ip + ":" + str(self.port) + " disconnected."
+        print "Client " + self.ip + ":" + str(self.port) + " disconnected.\n"
 
 class SocketServer():
 
@@ -33,11 +33,12 @@ class SocketServer():
         tcpsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         tcpsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         tcpsock.bind((host,port))
+        print "Server Initialed on " + host + ":" + str(port)
+
         threads = []
 
         while True:
             tcpsock.listen(2)
-            print "Server Initialed on " + host + ":" + str(port)
             (clientsock, (ip, port)) = tcpsock.accept()
             newthread = ClientThread(ip, port, clientsock)
             newthread.start()

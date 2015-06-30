@@ -24,6 +24,8 @@ try:
     # Send data
     adb_devices = AdbHelper.adb_devices()
     for device in adb_devices.items():
+        message = ""
+
         # Check for device type
         if device[1] == "device":
             device_type = re.sub(r'\r+|\n+', '', AdbHelper.adb_shell('getprop ro.product.device', serial=device[0]))
@@ -39,19 +41,26 @@ try:
         # Check for device status
         if device[1] == "device":
             if os.path.isfile("/tmp/LOCKS/" + device[0] + ".lock"):
-                device_status = "locked"
+                device_avail = "locked"
             else:
-                device_status = "available"
+                device_avial = "available"
         else:
-            device_status = "unavailable"
+            device_avial = "unavailable"
 
-        message = "INFO:" + device[0] + "," + device[1] + "," + device_type + "," + device_status + "," + device_build
-        print 'Sending "%s"' % message
+        message += "{\"ident\":\"info\","
+        message +=  "\"serial\":\"" + device[0] + "\","
+        message +=  "\"status\":\"" + device[1] + "\","
+        message +=  "\"type\":\"" + device_type + "\","
+        message +=  "\"availability\":\"" + device_avial + "\","
+        message +=  "\"build\":\"" + device_build + "\""
+        message += "}"
+
+        print 'Sending %s' % message
         sock.sendall(message)
 
         # Look for the response
         data = sock.recv(1024).strip()
-        print 'Received "%s"' % data
+        print 'Received %s' % data
 
 finally:
     print 'Closing socket'

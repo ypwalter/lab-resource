@@ -55,12 +55,12 @@ try:
         message +=  "\"build\":\"" + device_build + "\""
         message += "}"
 
-        print 'Sending %s' % message
+        print 'Sending - %s' % message
         sock.sendall(message)
 
         # Look for the response
         data = sock.recv(1024).strip()
-        print 'Received %s' % data
+        print 'Received - %s' % data
 
 finally:
     print 'Closing socket'

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 
 import socket, threading
 
@@ -38,7 +38,7 @@ class SocketServer():
         threads = []
 
         while True:
-            tcpsock.listen(2)
+            tcpsock.listen(20)
             (clientsock, (ip, port)) = tcpsock.accept()
             newthread = ClientThread(ip, port, clientsock)
             newthread.start()
@@ -48,4 +48,4 @@ class SocketServer():
             t.join()
 
 if __name__ == "__main__":
-    server = SocketServer()
+    socketserver = SocketServer()

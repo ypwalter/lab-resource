@@ -1,6 +1,9 @@
+#!/usr/bin/python
+
 import tornado.ioloop
 import tornado.web
 import tornado.template
+
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -11,7 +14,11 @@ application = tornado.web.Application([
     (r"/", MainHandler),
 ])
 
+class WebServer():
+    def  __init__(self, port=8888):
+        application.listen(port)
+        tornado.ioloop.IOLoop.instance().start()
+        print "Web Server Launched and Stand-by Now."
+
 if __name__ == "__main__":
-    print "Web Server Launched and Stand-by Now."
-    application.listen(8888)
-    tornado.ioloop.IOLoop.instance().start()
+    webserver = WebServer()

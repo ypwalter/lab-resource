@@ -70,7 +70,6 @@ class LogDatabase():
         print(ret)
         return ret
 
-
     def close(self):
         print "Closing database"
         self.conn.close()

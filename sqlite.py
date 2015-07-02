@@ -35,20 +35,41 @@ class LogDatabase():
 
     def get_log_all(self):
         self.cur.execute("SELECT * FROM log")
-        print(self.cur.fetchall())
+        ret = self.cur.fetchall()
+        print(ret)
+        return ret
 
     def get_log_latest(self, number=1):
         self.cur.execute("SELECT * FROM log ORDER BY timestamp DESC LIMIT " + str(number))
-        print(self.cur.fetchall())
+        ret = self.cur.fetchall()
+        print(ret)
+        return ret
 
     def get_log_latest_device(self, serial, number=5):
-        self.cur.execute("SELECT * FROM log WHERE serial = " + serial + " ORDER BY timestamp DESC LIMIT " + str(number))
-        print(self.cur.fetchall())
+        self.cur.execute("SELECT * FROM log WHERE serial = '" + serial + "' ORDER BY timestamp DESC LIMIT " + str(number))
+        ret = self.cur.fetchall()
+        print(ret)
+        return ret
 
     def get_log_latest_all_devices(self):
         # SELECT * FROM log as l1 WHERE timestamp = (SELECT MAX(timestamp) FROM log as l2 WHERE l1.serial = l2.serial) GROUP BY serial
         self.cur.execute("SELECT id, host, log.serial, status, type, availability, build, log.timestamp FROM log INNER JOIN (SELECT serial, MAX(timestamp) AS mt FROM log GROUP BY serial) AS maxt ON log.serial = maxt.serial AND log.timestamp = maxt.mt")
-        print(self.cur.fetchall())
+        ret = self.cur.fetchall()
+        print(ret)
+        return ret
+
+    def get_log_latest_host(self, host, number=10):
+        self.cur.execute("SELECT * FROM log WHERE host = '" + host + "' ORDER BY timestamp DESC LIMIT " + str(number))
+        ret = self.cur.fetchall()
+        print(ret)
+        return ret
+
+    def get_log_latest_all_hosts(self):
+        self.cur.execute("SELECT * FROM log as l1 WHERE timestamp = (SELECT MAX(timestamp) FROM log as l2 where l1.host = l2.host) GROUP BY host")
+        ret = self.cur.fetchall()
+        print(ret)
+        return ret
+
 
     def close(self):
         print "Closing database"
@@ -66,6 +87,10 @@ if __name__ == "__main__":
     db.get_log_latest_device("2", 2)
     print "Get the latest record for each device:"
     db.get_log_latest_all_devices()
+    print "Get the latest 2 for certain host:"
+    db.get_log_latest_host("1.1.1.1", 2)
+    print "Get the latest record for each device:"
+    db.get_log_latest_all_hosts()
     print "Get all log:"
     db.get_log_all()
     db.close()
